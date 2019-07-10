@@ -1,0 +1,17 @@
+name: MilkyVote
+version: 0.0.1
+main: io.github.emckee10.MilkyVote.MVMain
+description: Centrilizes Voting
+author: TheITx
+commands:
+  SetVotingSite:
+    description: Sets voting website URL
+    permission: MilyVote.SetVotingSite
+    aliases: [setURL]
+    permission-message: You do not have the permission to use this command.
+    usage: "&cUsage: /<command> [URL]"
+  MilkyVote:
+    description: displays voting URL
+    aliases: [milkvote, mvote]
+    usage: "&cUsage: /<command>"
+
