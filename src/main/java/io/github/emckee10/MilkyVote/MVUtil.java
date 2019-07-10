@@ -12,6 +12,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.logging.Logger;
 
 public class MVUtil
@@ -20,6 +22,7 @@ public class MVUtil
   private File settingsFile;
   private FileConfiguration settingsConfiguration;
   private Logger logger;
+  private TextComponent message;
   MVUtil(MVMain plugin)
   {
     this.plugin = plugin;
@@ -76,25 +79,41 @@ public class MVUtil
   }
   private Object getURLSettings()
   {
-   return (String)this.getSettingsConfiguration().get("settings.URL");
+    return this.getSettingsConfiguration().get("settings.URL");
   }
   
-  public void sendLink(CommandSender sender)
+  public boolean sendLink(CommandSender sender)
   {
-    TextComponent link = buildMessage();
-    sender.spigot().sendMessage(link);
+    boolean success = buildMessage();
+    if (success) {
+      sender.spigot().sendMessage(message);
+    }
+    else {
+      sender.sendMessage("Not a valid URL");
+    }
+    return success;
   }
   
-  public TextComponent buildMessage()
+  public boolean buildMessage()
   {
-    TextComponent message= new TextComponent("Vote by clicking on this link -> ");
+    message = new TextComponent("Vote by clicking on this link -> ");
     message.setColor(ChatColor.LIGHT_PURPLE);
     String url = (String) this.getURLSettings();
+    System.out.println("i got here before failing.");
     TextComponent urlMessage = new TextComponent(url);
-    urlMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click Me to Vote").color(ChatColor.GREEN).create()));
-    urlMessage.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+    System.out.println("but i failed her");
+    URL URL;
+    try {
+      URL = new URL(url);
+      urlMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click Me to Vote").color(ChatColor.GREEN).create()));
+      System.out.println(URL.getPath());
+      urlMessage.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, URL.getPath()));
+    }
+    catch (MalformedURLException e) {
+      return false;
+    }
     message.addExtra(urlMessage);
-    return message;
+    return true;
   }
   
 }

@@ -22,13 +22,9 @@ public class MVExecutor implements CommandExecutor
     boolean result = false;
     switch (command.getName().toLowerCase()) {
       case "setvotingsite":
-        if(sender.hasPermission("MilyVote.SetVotingSite"))
         result = setURL(sender, args);
-        else
-          result = false;
-        
         break;
-      case "MilkyVote":
+      case "milkyvote":
         result = vote(sender);
         break;
     }
@@ -38,7 +34,8 @@ public class MVExecutor implements CommandExecutor
   
   private boolean setURL(CommandSender sender, String[] args)
   {
-    if(args.length ==1) {
+    System.out.println(args.length + "");
+    if (args.length == 1) {
       util.setURLSettings(args[0]);
       return true;
     }
@@ -48,8 +45,7 @@ public class MVExecutor implements CommandExecutor
   
   private boolean vote(CommandSender sender)
   {
-    util.sendLink(sender);
-    return true;
+    return util.sendLink(sender);
   }
   
 }
