@@ -87,11 +87,12 @@ public class MVUtil
     boolean success = buildMessage();
     if (success) {
       sender.spigot().sendMessage(message);
+      return true;
     }
     else {
       sender.sendMessage("Not a valid URL");
+      return false;
     }
-    return success;
   }
   
   public boolean buildMessage()
