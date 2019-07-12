@@ -1,10 +1,6 @@
 package io.github.emckee10.MilkyVote;
 
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,8 +8,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.logging.Logger;
 
 public class MVUtil
@@ -22,7 +16,8 @@ public class MVUtil
   private File settingsFile;
   private FileConfiguration settingsConfiguration;
   private Logger logger;
-  private TextComponent message;
+  private String message;
+  
   MVUtil(MVMain plugin)
   {
     this.plugin = plugin;
@@ -53,7 +48,6 @@ public class MVUtil
   {
     return ChatColor.translateAlternateColorCodes('&', msg);
   }
-  
   
   private FileConfiguration getSettingsConfiguration()
   {
@@ -86,7 +80,7 @@ public class MVUtil
   {
     boolean success = buildMessage();
     if (success) {
-      sender.spigot().sendMessage(message);
+      sender.sendMessage(message);
       return true;
     }
     else {
@@ -97,23 +91,8 @@ public class MVUtil
   
   public boolean buildMessage()
   {
-    message = new TextComponent("Vote by clicking on this link -> ");
-    message.setColor(ChatColor.LIGHT_PURPLE);
     String url = (String) this.getURLSettings();
-    System.out.println("i got here before failing.");
-    TextComponent urlMessage = new TextComponent(url);
-    System.out.println("but i failed her");
-    URL URL;
-    try {
-      URL = new URL(url);
-      urlMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click Me to Vote").color(ChatColor.GREEN).create()));
-      System.out.println(URL.getPath());
-      urlMessage.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, URL.getPath()));
-    }
-    catch (MalformedURLException e) {
-      return false;
-    }
-    message.addExtra(urlMessage);
+    message = color("&5Vote by clicking on this link -> ") + color("&e" + url);
     return true;
   }
   

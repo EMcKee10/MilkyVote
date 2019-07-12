@@ -7,9 +7,9 @@ commands:
   SetVotingSite:
     description: Sets voting website URL
     permission: MilkyVote.SetVotingSite
-    aliases: setURL
     permission-message: You do not have the permission to use this command.
     usage: "&cUsage: /<command> [URL]"
+    aliases: [setURL]
   MilkyVote:
     description: displays voting URL
     aliases: [milkvote, mvote]

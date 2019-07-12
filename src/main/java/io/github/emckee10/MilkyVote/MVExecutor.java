@@ -23,9 +23,15 @@ public class MVExecutor implements CommandExecutor
     switch (command.getName().toLowerCase()) {
       case "setvotingsite":
         result = setURL(sender, args);
+        if (result) {
+          sender.sendMessage(MVUtil.color("&aSuccess! Players can now click " + args[0] + " to vote!"));
+        }
         break;
       case "milkyvote":
         result = vote(sender);
+        if (!result) {
+          sender.sendMessage(MVUtil.color("&cInvalid URL"));
+        }
         break;
     }
     
