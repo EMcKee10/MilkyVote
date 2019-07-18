@@ -86,7 +86,6 @@ public class MVUtil
     message.setColor(ChatColor.LIGHT_PURPLE);
     String url = (String) this.getURLSettings();
     BaseComponent[] link = new ComponentBuilder("-> Click Me to vote <-").underlined(true).event(new ClickEvent(ClickEvent.Action.OPEN_URL, url)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click Me to Vote").color(ChatColor.GREEN).create())).create();
-    
     for (BaseComponent baseComponent : link) {
       message.addExtra(baseComponent);
     }
