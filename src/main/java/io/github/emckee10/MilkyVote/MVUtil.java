@@ -1,13 +1,17 @@
 package io.github.emckee10.MilkyVote;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.logging.Logger;
 
 public class MVUtil
@@ -16,7 +20,6 @@ public class MVUtil
   private File settingsFile;
   private FileConfiguration settingsConfiguration;
   private Logger logger;
-  private String message;
   
   MVUtil(MVMain plugin)
   {
@@ -49,6 +52,7 @@ public class MVUtil
     return ChatColor.translateAlternateColorCodes('&', msg);
   }
   
+  
   private FileConfiguration getSettingsConfiguration()
   {
     return settingsConfiguration;
@@ -76,24 +80,21 @@ public class MVUtil
     return this.getSettingsConfiguration().get("settings.URL");
   }
   
-  public boolean sendLink(CommandSender sender)
+  public boolean buildMessage(CommandSender sender) throws UnsupportedEncodingException
   {
-    boolean success = buildMessage();
-    if (success) {
-      sender.sendMessage(message);
-      return true;
-    }
-    else {
-      sender.sendMessage("Not a valid URL");
-      return false;
-    }
-  }
-  
-  public boolean buildMessage()
-  {
+    TextComponent message;
+    message = new TextComponent("Vote by clicking on this link ");
+    message.setColor(ChatColor.LIGHT_PURPLE);
     String url = (String) this.getURLSettings();
-    message = color("&5Vote by clicking on this link -> ") + color("&e" + url);
+    
+    BaseComponent[] link = new ComponentBuilder("-> Click Me to vote <-").underlined(true).event(new ClickEvent(ClickEvent.Action.OPEN_URL, URLEncoder.encode(url, "utf-8"))).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click Me to Vote").color(ChatColor.GREEN).create())).create();
+    
+    for (BaseComponent baseComponent : link) {
+      message.addExtra(baseComponent);
+    }
+    ((Player) sender).spigot().sendMessage(message);
     return true;
   }
+  
   
 }

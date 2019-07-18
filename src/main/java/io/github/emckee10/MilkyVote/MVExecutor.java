@@ -4,6 +4,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+import java.io.UnsupportedEncodingException;
+
 public class MVExecutor implements CommandExecutor
 {
   MVMain plugin;
@@ -51,7 +53,13 @@ public class MVExecutor implements CommandExecutor
   
   private boolean vote(CommandSender sender)
   {
-    return util.sendLink(sender);
+    try {
+      return util.buildMessage(sender);
+    }
+    catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+      return false;
+    }
   }
   
 }
