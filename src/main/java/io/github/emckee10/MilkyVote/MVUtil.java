@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.logging.Logger;
 
 public class MVUtil
@@ -86,7 +85,7 @@ public class MVUtil
     message = new TextComponent("Vote by clicking on this link ");
     message.setColor(ChatColor.LIGHT_PURPLE);
     String url = (String) this.getURLSettings();
-    BaseComponent[] link = new ComponentBuilder("-> Click Me to vote <-").underlined(true).event(new ClickEvent(ClickEvent.Action.OPEN_URL, URLEncoder.encode(url, "utf-8"))).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click Me to Vote").color(ChatColor.GREEN).create())).create();
+    BaseComponent[] link = new ComponentBuilder("-> Click Me to vote <-").underlined(true).event(new ClickEvent(ClickEvent.Action.OPEN_URL, url)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click Me to Vote").color(ChatColor.GREEN).create())).create();
     
     for (BaseComponent baseComponent : link) {
       message.addExtra(baseComponent);
