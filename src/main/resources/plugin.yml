@@ -6,10 +6,10 @@ author: TheITx
 commands:
   SetVotingSite:
     description: Sets voting website URL
+    aliases: setURL
     permission: MilkyVote.SetVotingSite
     permission-message: You do not have the permission to use this command.
     usage: "&cUsage: /<command> [URL]"
-    aliases: [setURL]
   MilkyVote:
     description: displays voting URL
     aliases: [milkvote, mvote]

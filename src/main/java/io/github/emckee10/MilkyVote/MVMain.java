@@ -3,30 +3,28 @@ package io.github.emckee10.MilkyVote;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Objects;
-
 public class MVMain extends JavaPlugin
 {
+  public static MVMain plugin;
   
-  public MVUtil Util;
-  
-  public void onEnable()
+  public static MVMain getInstance()
   {
-    Util = new MVUtil(this);
-    //TODO create Toggle for individual users.
-    Objects.requireNonNull(this.getCommand("SetVotingSite")).setExecutor(new MVExecutor(this));
-    Objects.requireNonNull(this.getCommand("MilkyVote")).setExecutor(new MVExecutor(this));
-    
+    return plugin;
   }
+  
   @Override
   public void onDisable()
   {
   
   }
-  
-  public MVUtil getUtil()
+
+  public void onEnable()
   {
-    return Util;
+    plugin = this;
+    new MVUtil();
+    this.getCommand("SetVotingSite").setExecutor(new MVExecutor(this));
+    this.getCommand("MilkyVote").setExecutor(new MVExecutor(this));
+    
   }
 }
 

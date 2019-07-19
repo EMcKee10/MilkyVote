@@ -6,34 +6,38 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class MVUtil
 {
-  private MVMain plugin;
-  private File settingsFile;
-  private FileConfiguration settingsConfiguration;
-  private Logger logger;
+  private static MVUtil util;
+  private static File settingsFile;
+  private static FileConfiguration settingsConfiguration;
+  private static Logger logger;
   
-  MVUtil(MVMain plugin)
+  public MVUtil()
   {
-    this.plugin = plugin;
-    createConfig();
+    util = this;
+    createSettingsConfig();
   }
   
-  private void createConfig()
+  public static MVUtil getInstance()
   {
-    settingsFile = new File(plugin.getDataFolder(), "settings.yml");
+    return util;
+  }
+  
+  private static void createSettingsConfig()
+  {
+    settingsFile = new File(MVMain.getInstance().getDataFolder(), "settings.yml");
     
     
     if (!settingsFile.exists()) {
       settingsFile.getParentFile().mkdirs();
-      plugin.saveResource("settings.yml", false);
+      MVMain.getInstance().saveResource("settings.yml", false);
     }
     
     settingsConfiguration = new YamlConfiguration();
@@ -46,52 +50,61 @@ public class MVUtil
     }
   }
   
-  public static String color(String msg)
-  {
-    return ChatColor.translateAlternateColorCodes('&', msg);
-  }
-  
-  
-  private FileConfiguration getSettingsConfiguration()
+  private static FileConfiguration getSettingsConfiguration()
   {
     return settingsConfiguration;
   }
   
-  private File getSettingsFile()
+  private static File getSettingsFile()
   {
     return settingsFile;
   }
   
-  public boolean setURLSettings(String URL)
+  public static Object getURLSettings()
   {
-    this.getSettingsConfiguration().set("settings.URL", URL);
+    return getSettingsConfiguration().get("settings.URL");
+  }
+  
+  public static Object getDisplayMessage()
+  {
+    return getSettingsConfiguration().get("settings.Display_Message");
+  }
+  
+  public static boolean setURLSettings(String URL)
+  {
+    getSettingsConfiguration().set("settings.URL", URL);
     try {
-      this.getSettingsConfiguration().save(this.getSettingsFile());
+      getSettingsConfiguration().save(getSettingsFile());
       return true;
     }
     catch (IOException e) {
-      this.logger.severe("An error has occurred while trying to set the number of slots");
+      logger.severe("An error has occurred while trying to set the number of slots");
     return false;
     }
   }
-  private Object getURLSettings()
+  
+  public static boolean setDisplayMessageSettings(String[] URL)
   {
-    return this.getSettingsConfiguration().get("settings.URL");
+    String url = Arrays.toString(URL);
+    getSettingsConfiguration().set("settings.Display_Message", url);
+    try {
+      getSettingsConfiguration().save(getSettingsFile());
+      return true;
+    }
+    catch (IOException e) {
+      logger.severe("An error has occurred while trying to set the number of slots");
+      return false;
+    }
   }
   
-  public boolean buildMessage(CommandSender sender) throws UnsupportedEncodingException
+  public TextComponent buildMessage(CommandSender sender, String url, String displayMessage)
   {
-    TextComponent message;
-    message = new TextComponent("Vote by clicking on this link ");
+    TextComponent message = new TextComponent();
     message.setColor(ChatColor.LIGHT_PURPLE);
-    String url = (String) this.getURLSettings();
-    BaseComponent[] link = new ComponentBuilder("-> Click Me to vote <-").underlined(true).event(new ClickEvent(ClickEvent.Action.OPEN_URL, url)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click Me to Vote").color(ChatColor.GREEN).create())).create();
+    BaseComponent[] link = new ComponentBuilder(displayMessage).underlined(true).event(new ClickEvent(ClickEvent.Action.OPEN_URL, url)).event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click Me to Vote").color(ChatColor.GREEN).create())).create();
     for (BaseComponent baseComponent : link) {
       message.addExtra(baseComponent);
     }
-    ((Player) sender).spigot().sendMessage(message);
-    return true;
+    return message;
   }
-  
-  
 }
