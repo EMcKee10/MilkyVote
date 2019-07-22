@@ -5,9 +5,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class MVMain extends JavaPlugin
 {
-  public static MVMain plugin;
+  private static MVMain plugin;
   
-  public static MVMain getInstance()
+  static MVMain getInstance()
   {
     return plugin;
   }
@@ -22,8 +22,9 @@ public class MVMain extends JavaPlugin
   {
     plugin = this;
     new MVUtil();
-    this.getCommand("SetVotingSite").setExecutor(new MVExecutor(this));
-    this.getCommand("MilkyVote").setExecutor(new MVExecutor(this));
+    getCommand("SetVotingSite").setExecutor(new MVExecutor());
+    getCommand("SetVotingDisplayMessage").setExecutor(new MVExecutor());
+    getCommand("MilkyVote").setExecutor(new MVExecutor());
     
   }
 }

@@ -7,16 +7,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Objects;
-
 public class MVExecutor implements CommandExecutor
 {
-  MVMain plugin;
-  MVUtil util;
+  private MVUtil util;
+  private String displayMessage = "";
   
-  public MVExecutor(MVMain plugin)
+  MVExecutor()
   {
-    plugin = MVMain.getInstance();
     util = MVUtil.getInstance();
   }
   
@@ -26,11 +23,23 @@ public class MVExecutor implements CommandExecutor
     if (command.getName().equalsIgnoreCase("setvotingsite")) {
       boolean result = setURL(sender, args);
       if (result) {
-        sender.sendMessage(ChatColor.RED + "Success! Players can now use the /mvote command to vote!");
+        sender.sendMessage(ChatColor.GREEN + "Success! Players can now use the /mvote command to vote!");
         return true;
       }
       else {
         return false;
+      }
+    }
+    else if (command.getName().equalsIgnoreCase("setvotingdisplaymessage")) {
+      {
+        boolean result = setDisplayMessage(sender, args);
+        if (result) {
+          sender.sendMessage(ChatColor.GREEN + "Success! Players will now see the message \"" + ChatColor.RESET + displayMessage + ChatColor.GREEN + "\" instead of the URL!");
+          return true;
+        }
+        else {
+          return false;
+        }
       }
     }
     else if (command.getName().equalsIgnoreCase("milkyvote")) {
@@ -47,10 +56,11 @@ public class MVExecutor implements CommandExecutor
     }
   }
   
-  private boolean setDisplayMember(CommandSender sender, String[] args)
+  private boolean setDisplayMessage(CommandSender sender, String[] args)
   {
     if (args.length > 0) {
-      return MVUtil.setDisplayMessageSettings(args);
+      displayMessage = MVUtil.setDisplayMessageSettings(String.join(" ", args));
+      return !displayMessage.equals("");
     }
     else {
       sender.sendMessage(ChatColor.RED + "You must enter in a display message to hid your link.");
@@ -60,11 +70,12 @@ public class MVExecutor implements CommandExecutor
   
   private boolean setURL(CommandSender sender, String[] args)
   {
+    String displayMessage = (String) MVUtil.getDisplayMessage();
+    if (displayMessage.equals("")) {
+      sender.sendMessage(ChatColor.RED + "You must set a display message first. Do so with the /setDisplayMessage command");
+      return true;
+    }
     if (args.length == 1) {
-      if (Objects.isNull(MVUtil.getDisplayMessage())) {
-        sender.sendMessage(ChatColor.RED + "You must set DisplayMessage first. Do so with the /setDisplayMessage command");
-        return true;
-      }
       UrlValidator urlValidator = new UrlValidator(UrlValidator.ALLOW_ALL_SCHEMES);
       if (urlValidator.isValid(args[0])) {
         return MVUtil.setURLSettings(args[0]);
@@ -84,7 +95,8 @@ public class MVExecutor implements CommandExecutor
   {
     String URL = (String) MVUtil.getURLSettings();
     String displayMessage = (String) MVUtil.getDisplayMessage();
-    ((Player) sender).spigot().sendMessage(util.buildMessage(sender, URL, displayMessage));
+    if (!displayMessage.equals("") || !URL.equals(""))
+      ((Player) sender).spigot().sendMessage(util.buildMessage(sender, URL, displayMessage));
   }
   
   

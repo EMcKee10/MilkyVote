@@ -9,23 +9,20 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.logging.Logger;
 
-public class MVUtil
+class MVUtil
 {
   private static MVUtil util;
   private static File settingsFile;
   private static FileConfiguration settingsConfiguration;
-  private static Logger logger;
   
-  public MVUtil()
+  MVUtil()
   {
     util = this;
     createSettingsConfig();
   }
   
-  public static MVUtil getInstance()
+  static MVUtil getInstance()
   {
     return util;
   }
@@ -33,8 +30,6 @@ public class MVUtil
   private static void createSettingsConfig()
   {
     settingsFile = new File(MVMain.getInstance().getDataFolder(), "settings.yml");
-    
-    
     if (!settingsFile.exists()) {
       settingsFile.getParentFile().mkdirs();
       MVMain.getInstance().saveResource("settings.yml", false);
@@ -60,17 +55,17 @@ public class MVUtil
     return settingsFile;
   }
   
-  public static Object getURLSettings()
+  static Object getURLSettings()
   {
     return getSettingsConfiguration().get("settings.URL");
   }
   
-  public static Object getDisplayMessage()
+  static Object getDisplayMessage()
   {
     return getSettingsConfiguration().get("settings.Display_Message");
   }
   
-  public static boolean setURLSettings(String URL)
+  static boolean setURLSettings(String URL)
   {
     getSettingsConfiguration().set("settings.URL", URL);
     try {
@@ -78,26 +73,27 @@ public class MVUtil
       return true;
     }
     catch (IOException e) {
-      logger.severe("An error has occurred while trying to set the number of slots");
+      System.out.println("An error has occurred while trying to set the URL into setting.yml. Check to see that this file is present within your plugin folder.");
     return false;
     }
   }
   
-  public static boolean setDisplayMessageSettings(String[] URL)
+  static String setDisplayMessageSettings(String message)
   {
-    String url = Arrays.toString(URL);
-    getSettingsConfiguration().set("settings.Display_Message", url);
+    System.out.println(message);
+    getSettingsConfiguration().set("settings.Display_Message", message);
     try {
       getSettingsConfiguration().save(getSettingsFile());
-      return true;
+      return message;
     }
     catch (IOException e) {
-      logger.severe("An error has occurred while trying to set the number of slots");
-      return false;
+      System.out.println("An error has occurred while trying to set the display message into setting.yml. Check to see that this file is present within your plugin folder.");
+      return "";
     }
   }
   
-  public TextComponent buildMessage(CommandSender sender, String url, String displayMessage)
+  
+  TextComponent buildMessage(CommandSender sender, String url, String displayMessage)
   {
     TextComponent message = new TextComponent();
     message.setColor(ChatColor.LIGHT_PURPLE);
